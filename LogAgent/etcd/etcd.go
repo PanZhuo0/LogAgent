@@ -31,16 +31,28 @@ func GetConf(key string) {
 		panic(err)
 	}
 	for _, v := range response.Kvs {
-		fmt.Println(string(v.Value))
+		//如果是空的配置,continue
+		if v.Value == nil {
+			fmt.Println("空的配置!")
+			continue
+		}
 		err := json.Unmarshal(v.Value, &taillog.Mgr.LogEntries)
 		if err != nil {
 			fmt.Println("Json unmarshal failed,err:", err)
 			panic(err)
 		}
 	}
-	//for range
-	for _, v := range taillog.Mgr.LogEntries {
-		fmt.Println(v)
-	}
 	cancel()
+}
+
+// WatchConf 监视Etcd是否发生变化
+func WatchConf(key string) {
+	watchChan := client.Watch(context.Background(), key)
+	for resp := range watchChan {
+		for _, v := range resp.Events {
+			//直接把新的修改发送给taillog中的Manager处理就行,这里不做处理
+			//	这里的修改数据被断言是json类型LogEntry对象配置
+			taillog.Mgr.NewConfCh <- v.Kv.Value
+		}
+	}
 }

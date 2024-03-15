@@ -21,7 +21,10 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	//除了个小错误，这里的topic 写成了topic:
 	//value := `[{"path":"d:/mysql.log","topic:":"mysql_log"},{"path":"d:/redis.log","topic:":"redis_log"},{"path":"d:/nginx.log","topic:":"nginx_log"}]`
-	value := `[{"path":"d:/mysql.log","topic":"mysql_log"},{"path":"d:/redis.log","topic":"redis_log"},{"path":"d:/nginx.log","topic":"nginx_log"}]`
+	//value := `[{"path":"d:/mysql.log","topic":"mysql_log"},{"path":"d:/redis.log","topic":"redis_log"},{"path":"d:/nginx.log","topic":"nginx_log"}]`
+	//value := `[{"path":"d:/mysql.log","topic":"mysql_log"},{"path":"d:/redis.log","topic":"redis_log"}]`
+	//value := `[{"path":"d:/mysql.log","topic":"mysql_log"}]`
+	value := ``
 	client.Put(ctx, key, value)
 	cancel()
 }

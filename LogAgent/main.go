@@ -38,9 +38,10 @@ func main() {
 	//	3.从Etcd中获取LogAgent的配置信息
 	ip := utils.GetOutBindIP()
 	key := fmt.Sprintf(cfg.Etcd.Key, ip)
-	fmt.Println(key)
 	etcd.GetConf(key)
 	//	4.开始根据Etcd的配置获取对应数据,并将数据信息发送给Kafka
 	taillog.Init()
+	//	5.Etcd监视热更新
+	go etcd.WatchConf(key)
 	select {} //确保程序一直执行
 }
