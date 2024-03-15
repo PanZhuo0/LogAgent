@@ -4,6 +4,7 @@ import "gopkg.in/ini.v1"
 
 type Etcd struct {
 	Address string `ini:"address"`
+	Key     string `ini:"key"`
 }
 
 type Kafka struct {

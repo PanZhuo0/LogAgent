@@ -4,6 +4,7 @@ import (
 	"GO/LogAgent/config"
 	"GO/LogAgent/etcd"
 	"GO/LogAgent/kafka"
+	"GO/LogAgent/utils"
 	"fmt"
 )
 
@@ -30,10 +31,14 @@ func main() {
 		fmt.Println("Prepare Etcd failed,err:", err)
 		return
 	}
-
 	err = kafka.Init(cfg.Kafka.Address)
 	if err != nil {
 		fmt.Println("Init Kafka failed,err:", err)
 		return
 	}
+	//	3.从Etcd中获取LogAgent的配置信息
+	ip := utils.GetOutBindIP()
+	key := fmt.Sprintf(cfg.Etcd.Key, ip)
+	fmt.Println(key)
+	etcd.GetConf(key)
 }

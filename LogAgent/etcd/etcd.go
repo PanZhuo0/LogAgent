@@ -1,6 +1,7 @@
 package etcd
 
 import (
+	"context"
 	"fmt"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"time"
@@ -18,4 +19,17 @@ func Init(address string) (err error) {
 	}
 	fmt.Println("Prepare Etcd succeed!")
 	return
+}
+
+func GetConf(key string) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*3)
+	response, err := client.Get(ctx, key)
+	if err != nil {
+		fmt.Println("Get Configuration from Etcd failed,err:", err)
+		panic(err)
+	}
+	for _, v := range response.Kvs {
+		fmt.Println(string(v.Value))
+	}
+	cancel()
 }
