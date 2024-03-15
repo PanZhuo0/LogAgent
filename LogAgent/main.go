@@ -2,6 +2,8 @@ package main
 
 import (
 	"GO/LogAgent/config"
+	"GO/LogAgent/etcd"
+	"GO/LogAgent/kafka"
 	"fmt"
 )
 
@@ -22,4 +24,16 @@ func main() {
 	cfg := config.Init()
 	fmt.Println(cfg.Etcd)
 	fmt.Println(cfg.Kafka)
+	//	2.初始化Etcd和Kafka
+	err := etcd.Init(cfg.Etcd.Address)
+	if err != nil {
+		fmt.Println("Prepare Etcd failed,err:", err)
+		return
+	}
+
+	err = kafka.Init(cfg.Kafka.Address)
+	if err != nil {
+		fmt.Println("Init Kafka failed,err:", err)
+		return
+	}
 }
