@@ -19,7 +19,9 @@ func main() {
 	//获取数据
 	key := fmt.Sprintf("/logAgent/%s/config", GetOutBindIP())
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	value := `[{"path":"d:/mysql.log","topic:":"mysql_log"},{"path":"d:/redis.log","topic:":"redis_log"},{"path":"d:/nginx.log","topic:":"nginx_log"}]`
+	//除了个小错误，这里的topic 写成了topic:
+	//value := `[{"path":"d:/mysql.log","topic:":"mysql_log"},{"path":"d:/redis.log","topic:":"redis_log"},{"path":"d:/nginx.log","topic:":"nginx_log"}]`
+	value := `[{"path":"d:/mysql.log","topic":"mysql_log"},{"path":"d:/redis.log","topic":"redis_log"},{"path":"d:/nginx.log","topic":"nginx_log"}]`
 	client.Put(ctx, key, value)
 	cancel()
 }

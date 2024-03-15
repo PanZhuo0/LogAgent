@@ -1,7 +1,9 @@
 package etcd
 
 import (
+	"GO/LogAgent/taillog"
 	"context"
+	"encoding/json"
 	"fmt"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"time"
@@ -30,6 +32,15 @@ func GetConf(key string) {
 	}
 	for _, v := range response.Kvs {
 		fmt.Println(string(v.Value))
+		err := json.Unmarshal(v.Value, &taillog.Mgr.LogEntries)
+		if err != nil {
+			fmt.Println("Json unmarshal failed,err:", err)
+			panic(err)
+		}
+	}
+	//for range
+	for _, v := range taillog.Mgr.LogEntries {
+		fmt.Println(v)
 	}
 	cancel()
 }

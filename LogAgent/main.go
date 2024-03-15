@@ -4,6 +4,7 @@ import (
 	"GO/LogAgent/config"
 	"GO/LogAgent/etcd"
 	"GO/LogAgent/kafka"
+	"GO/LogAgent/taillog"
 	"GO/LogAgent/utils"
 	"fmt"
 )
@@ -23,8 +24,6 @@ import (
 func main() {
 	//	1.加载Ini配置文件
 	cfg := config.Init()
-	fmt.Println(cfg.Etcd)
-	fmt.Println(cfg.Kafka)
 	//	2.初始化Etcd和Kafka
 	err := etcd.Init(cfg.Etcd.Address)
 	if err != nil {
@@ -41,4 +40,7 @@ func main() {
 	key := fmt.Sprintf(cfg.Etcd.Key, ip)
 	fmt.Println(key)
 	etcd.GetConf(key)
+	//	4.开始根据Etcd的配置获取对应数据,并将数据信息发送给Kafka
+	taillog.Init()
+	select {} //确保程序一直执行
 }

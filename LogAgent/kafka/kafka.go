@@ -19,3 +19,17 @@ func Init(address string) (err error) {
 	fmt.Println("Init Kafka Succeed!")
 	return
 }
+
+func SendToKafka(data, topic string) {
+	msg := &sarama.ProducerMessage{}
+	msg.Topic = topic
+	msg.Value = sarama.StringEncoder(data)
+
+	//	发送
+	pid, offset, err := producer.SendMessage(msg)
+	if err != nil {
+		fmt.Println("Send msg failed,err:", err)
+		return
+	}
+	fmt.Printf("pid:%v offset:%v topic:%s msg:%s\n", pid, offset, topic, data)
+}
