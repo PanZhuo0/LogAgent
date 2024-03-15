@@ -25,7 +25,11 @@ func main() {
 	//value := `[{"path":"d:/mysql.log","topic":"mysql_log"},{"path":"d:/redis.log","topic":"redis_log"}]`
 	//value := `[{"path":"d:/mysql.log","topic":"mysql_log"}]`
 	value := ``
-	client.Put(ctx, key, value)
+	_, err = client.Put(ctx, key, value)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	cancel()
 }
 
