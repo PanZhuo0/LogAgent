@@ -2,6 +2,8 @@ package main
 
 import (
 	"GO/LogTransfer/config"
+	"GO/LogTransfer/es"
+	"GO/LogTransfer/kafka"
 	"fmt"
 	"gopkg.in/ini.v1"
 )
@@ -18,6 +20,18 @@ func main() {
 	}
 	fmt.Println(cfg)
 	//	1.初始化
+	err = kafka.Init(cfg.Kafka.Address)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = es.Init(cfg.ES.Address)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	//	2.从kafka中取出数据
-	//	3.发往ES
+	//	3.发往ES kafka.Run中包含了把数据发送给ES
+	kafka.Run(cfg.Topic)
+	select {}
 }
