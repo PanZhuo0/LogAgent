@@ -11,5 +11,7 @@ type Kafka struct {
 }
 
 type ES struct {
-	Address string `ini:"address"`
+	Address  string `ini:"address"`
+	ChanSize int    `ini:"chanSize"`
+	Nums     int    `ini:"nums"`
 }

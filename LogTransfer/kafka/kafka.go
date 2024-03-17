@@ -38,7 +38,7 @@ func Run(topic string) {
 		go func(sarama.PartitionConsumer) {
 			for msg := range pc.Messages() {
 				fmt.Printf("DataFromKafka ---- Topic:%s Pid:%d Offset:%d Key:%v Value:%v\n", topic, msg.Partition, msg.Offset, msg.Key, string(msg.Value))
-				es.SendToES(topic, msg.Value)
+				es.SendToESChan(topic, msg.Value)
 			}
 		}(pc)
 	}

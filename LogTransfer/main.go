@@ -25,7 +25,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	err = es.Init(cfg.ES.Address)
+	err = es.Init(cfg.ES.Address, cfg.ES.ChanSize, cfg.ES.Nums)
 	if err != nil {
 		fmt.Println(err)
 		return

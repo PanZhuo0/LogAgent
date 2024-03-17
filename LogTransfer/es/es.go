@@ -13,7 +13,15 @@ type LogData struct {
 	Data string `json:"log_data"`
 }
 
-func Init(address string) (err error) {
+type Log struct {
+	topic string
+	msg   string
+}
+
+var ch chan Log
+
+func Init(address string, chanSize int, nums int) (err error) {
+	ch = make(chan Log, chanSize) //怎么大应该够用了
 	if !strings.HasPrefix(address, "http://") {
 		address = "http://" + address
 	}
@@ -22,18 +30,34 @@ func Init(address string) (err error) {
 		return err
 	}
 	fmt.Println("connect to es succeed!")
+	//启动这个goroutine，让其一直获取数据
+	for i := 0; i < nums; i++ {
+		go sendToES()
+	}
 	return
 }
 
-func SendToES(topic string, logData []byte) {
-	d := LogData{
-		Data: string(logData),
+func SendToESChan(topic string, msg []byte) {
+	//存入chan
+	ch <- Log{
+		topic: topic,
+		msg:   string(msg),
 	}
-	//	把数据发送给ES
-	response, err := client.Index().Index(topic).BodyJson(d).Do(context.Background())
-	if err != nil {
-		fmt.Println("SendToES failed,err:", err)
-		return
+}
+
+func sendToES() {
+	//从chan中读出
+	for v := range ch {
+		d := LogData{
+			Data: v.msg,
+		}
+		//	把数据发送给ES
+		response, err := client.Index().Index(v.topic).BodyJson(d).Do(context.Background())
+		if err != nil {
+			fmt.Println("SendToES failed,err:", err)
+			return
+		}
+		fmt.Println("SendToES ----", "Index:", response.Index, " Type:", response.Type, "ID:", response.Id, "Result:", response.Result)
 	}
-	fmt.Println("SendToES ----", "Index:", response.Index, " Type:", response.Type, "ID:", response.Id, "Result:", response.Result)
+
 }
