@@ -9,7 +9,7 @@ import (
 var consumer sarama.Consumer
 
 func Init(address string) (err error) {
-	consumer, err = sarama.NewConsumer([]string{"localhost:9092"}, nil)
+	consumer, err = sarama.NewConsumer([]string{address}, nil)
 	if err != nil {
 		fmt.Printf("failed to start consumer,err:%v\n", err)
 		return
